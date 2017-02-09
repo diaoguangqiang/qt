@@ -16,6 +16,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+signals:
+protected:
+    bool eventFilter(QObject *, QEvent *);
+
     
 private:
     //QNetworkAccessManager * m_manager_;
