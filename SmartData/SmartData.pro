@@ -13,8 +13,20 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    trayiconmenu.cpp \
+    maskmainwidget.cpp \
+    abstmainwidget.cpp \
+    csxfwidget.cpp \
+    dnqlwidget.cpp \
+    yhjswidget.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    trayiconmenu.h \
+    maskmainwidget.h \
+    abstmainwidget.h \
+    csxfwidget.h \
+    dnqlwidget.h \
+    yhjswidget.h
 
 FORMS    += mainwindow.ui

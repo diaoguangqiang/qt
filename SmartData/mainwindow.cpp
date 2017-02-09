@@ -26,3 +26,38 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     return QObject::eventFilter(obj,event);
 }
 
+/**
+ * @brief MainWindow::mousePressEvent
+ * @param event
+ */
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+
+}
+
+/**
+ * @brief MainWindow::mouseReleaseEvent
+ * @param event
+ */
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+
+}
+
+/**
+ * @brief MainWindow::mouseMoveEvent
+ * @param event
+ */
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+
+}
+
+/**
+ * @brief MainWindow::paintEvent
+ */
+void MainWindow::paintEvent(QPaintEvent*)
+{
+
+}
+

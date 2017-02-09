@@ -1,0 +1,14 @@
+INPUT(
+./debug\main.o
+./debug\mainwindow.o
+./debug\trayiconmenu.o
+./debug\maskmainwidget.o
+./debug\abstmainwidget.o
+./debug\csxfwidget.o
+./debug\dnqlwidget.o
+./debug\yhjswidget.o
+./debug\moc_mainwindow.o
+./debug\moc_trayiconmenu.o
+./debug\moc_maskmainwidget.o
+./debug\moc_abstmainwidget.o
+);
