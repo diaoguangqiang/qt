@@ -2,7 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QObject>
+#include <QWidget>
 #include <QStackedWidget>
+#include "upmainwindow.h"
+#include "lowmainwindow.h"
 #include "csxfwidget.h"
 #include "dnqlwidget.h"
 #include "yhjswidget.h"
@@ -11,12 +15,12 @@
 #include <QSystemTrayIcon>
 #include "trayiconmenu.h"
 
-
 //#include <QtNetwork>
-
+/*
 namespace Ui {
 class MainWindow;
 }
+*/
 
 class MainWindow : public QMainWindow
 {
@@ -52,11 +56,20 @@ private:
     dnqlWidget *m_dnqlwid;
     yhjsWidget *m_yhjswid;
 
+public slots:
+    void returnanimation();
+    void slot_hideanimation();
+    void slot_hideanimationfinished();
+    void slot_setcurstack0(){m_stackwid->setCurrentIndex(0);}
+    void slot_setcurstack1(){m_stackwid->setCurrentIndex(1);}
+    void slot_setcurstack2(){m_stackwid->setCurrentIndex(2);}
+    void slot_setcurstack3(){m_stackwid->setCurrentIndex(3);}
+
 private slots:
-    //void replyFinished( QNetworkReply * );
+    void slot_iconIsActived(QSystemTrayIcon::ActivationReason);
 
 private:
-    Ui::MainWindow *ui;
+    //Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

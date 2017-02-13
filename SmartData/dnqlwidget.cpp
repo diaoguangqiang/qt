@@ -1,5 +1,7 @@
 #include "dnqlwidget.h"
 
-dnqlWidget::dnqlWidget()
+dnqlWidget::dnqlWidget(QWidget*parent)
+    : abstmainwidget(parent)
 {
+
 }

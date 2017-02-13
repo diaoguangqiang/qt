@@ -6,7 +6,7 @@
 class csxfwidget : public abstmainwidget
 {
 public:
-    csxfwidget();
+    csxfwidget( QWidget *parent=0 );
 };
 
 #endif // CSXFWIDGET_H

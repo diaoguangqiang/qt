@@ -5,8 +5,9 @@
 
 class dnqlWidget : public abstmainwidget
 {
-public:
-    dnqlWidget();
+public:    
+    dnqlWidget(QWidget*parent=0);
+    //void paintEvent(QPaintEvent*);
 };
 
 #endif // DNQLWIDGET_H

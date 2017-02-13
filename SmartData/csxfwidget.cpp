@@ -1,5 +1,6 @@
 #include "csxfwidget.h"
 
-csxfwidget::csxfwidget()
+csxfwidget::csxfwidget(QWidget *parent)
+    : abstmainwidget(parent)
 {
 }

@@ -19,7 +19,12 @@ SOURCES += main.cpp\
     abstmainwidget.cpp \
     csxfwidget.cpp \
     dnqlwidget.cpp \
-    yhjswidget.cpp
+    yhjswidget.cpp \
+    upmainwindow.cpp \
+    lowmainwindow.cpp \
+    mainwindowswidlow.cpp \
+    mainwindowswidup.cpp \
+    my360button.cpp
 
 HEADERS  += mainwindow.h \
     trayiconmenu.h \
@@ -27,6 +32,17 @@ HEADERS  += mainwindow.h \
     abstmainwidget.h \
     csxfwidget.h \
     dnqlwidget.h \
-    yhjswidget.h
+    yhjswidget.h \
+    upmainwindow.h \
+    lowmainwindow.h \
+    mainwindowswidlow.h \
+    mainwindowswidup.h \
+    my360button.h
 
-FORMS    += mainwindow.ui
+FORMS    += 
+
+RESOURCES += \
+	upmainres.qrc \
+    lowmainres.qrc \
+    centerwindres.qrc \
+    trayiconmenures.qrc

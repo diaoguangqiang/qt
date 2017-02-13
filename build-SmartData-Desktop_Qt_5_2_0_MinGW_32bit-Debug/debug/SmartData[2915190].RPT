@@ -1,0 +1,51 @@
+Exception Code : C0000005 ACCESS_VIOLATION
+Crash Address:  12E0DA49 12E15050:00000000 ð
+
+CPU:
+EAX:12E0DA48
+EBX:00000000
+ECX:0028FE7C
+EDX:0028FE7C
+ESI:0028FE51
+EDI:116C9578
+CS:EIP:0023:12E0DA49
+SS:ESP:002B:0028FDAC  EBP:0028FDC8
+DS:002B  ES:002B  FS:0053  GS:002B
+Flags:00010202
+
+PDB Search Path:.;F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\
+
+Call Stack:
+Address   Frame     Function            SourceFile
+12E0DA49  0028FDA8  FrmAddr Failed:870000:00000000 
+00401962  0028FDC8  FrmAddr Failed:870001:00000962 F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+0040164F  0028FE48  FrmAddr Failed:870001:0000064F F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+00403ACD  0028FE98  FrmAddr Failed:870001:00002ACD F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+0040A2AD  0028FEB8  FrmAddr Failed:870001:000092AD F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+004013FA  0028FF88  FrmAddr Failed:870001:000003FA F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+7558338A  0028FF94  FrmAddr Failed:870001:0000338A C:\Windows\syswow64\kernel32.dll
+779E9F72  0028FFD4  FrmAddr Failed:870001:00029F72 C:\Windows\SysWOW64\ntdll.dll
+779E9F45  0028FFEC  FrmAddr Failed:870001:00029F45 C:\Windows\SysWOW64\ntdll.dll
+Stack Param Info:
+
+Call Stack:
+Address   Frame     Function            SourceFile
+12E0DA49  0028FDA8  FrmAddr Failed:870000:00000000 
+
+00401962  0028FDC8  FrmAddr Failed:870001:00000962 F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+
+0040164F  0028FE48  FrmAddr Failed:870001:0000064F F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+
+00403ACD  0028FE98  FrmAddr Failed:870001:00002ACD F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+
+0040A2AD  0028FEB8  FrmAddr Failed:870001:000092AD F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+
+004013FA  0028FF88  FrmAddr Failed:870001:000003FA F:\Qt\SmartData\build-SmartData-Desktop_Qt_5_2_0_MinGW_32bit-Debug\debug\SmartData.exe
+
+7558338A  0028FF94  FrmAddr Failed:870001:0000338A C:\Windows\syswow64\kernel32.dll
+
+779E9F72  0028FFD4  FrmAddr Failed:870001:00029F72 C:\Windows\SysWOW64\ntdll.dll
+
+779E9F45  0028FFEC  FrmAddr Failed:870001:00029F45 C:\Windows\SysWOW64\ntdll.dll
+
+

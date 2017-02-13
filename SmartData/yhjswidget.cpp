@@ -1,5 +1,6 @@
 #include "yhjswidget.h"
 
-yhjsWidget::yhjsWidget()
+yhjsWidget::yhjsWidget(QWidget *parent)
+    : abstmainwidget(parent)
 {
 }

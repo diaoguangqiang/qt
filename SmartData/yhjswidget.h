@@ -6,7 +6,7 @@
 class yhjsWidget : public abstmainwidget
 {
 public:
-    yhjsWidget();
+    yhjsWidget( QWidget*parent=0 );
 };
 
 #endif // YHJSWIDGET_H
