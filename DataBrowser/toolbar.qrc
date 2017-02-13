@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/cat_hover.png</file>
+        <file>images/disk_check.png</file>
+    </qresource>
+</RCC>
