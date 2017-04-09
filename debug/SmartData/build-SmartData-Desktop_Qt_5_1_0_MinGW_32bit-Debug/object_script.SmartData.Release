@@ -1,0 +1,14 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\trayiconmenu.o
+./release\maskmainwidget.o
+./release\abstmainwidget.o
+./release\csxfwidget.o
+./release\dnqlwidget.o
+./release\yhjswidget.o
+./release\moc_mainwindow.o
+./release\moc_trayiconmenu.o
+./release\moc_maskmainwidget.o
+./release\moc_abstmainwidget.o
+);
