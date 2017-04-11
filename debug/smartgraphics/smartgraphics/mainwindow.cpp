@@ -16,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setGeometry(400, 250, 542, 390);
 
     //16 17 3 5 8 10
-    setupDemo(15);
+    this->setupDemo(20);
+
     //setupPlayground(ui->customPlot);
     // 0:  setupQuadraticDemo(ui->customPlot);
     // 1:  setupSimpleDemo(ui->customPlot);
@@ -68,7 +69,11 @@ void MainWindow::setupDemo(int demoIndex)
     case 17: setupAdvancedAxesDemo(ui->customPlot); break;
     case 18: setupColorMapDemo(ui->customPlot); break;
     case 19: setupFinancialDemo(ui->customPlot); break;
+    //绘画人体骨骼
+    case 20: this->painBones(ui->customPlot); break;
+    default: break;
   }
+
   setWindowTitle("QCustomPlot: "+demoName);
   statusBar()->clearMessage();
   currentDemoIndex = demoIndex;
@@ -218,12 +223,19 @@ void MainWindow::setupSincScatterDemo(QCustomPlot *customPlot)
   customPlot->axisRect()->setupFullAxesBox();
 }
 
+/**
+ * @brief MainWindow::setupScatterStyleDemo
+ * @param customPlot
+ */
 void MainWindow::setupScatterStyleDemo(QCustomPlot *customPlot)
 {
   demoName = "Scatter Style Demo";
+  //是否显示图标
   customPlot->legend->setVisible(true);
   customPlot->legend->setFont(QFont("Helvetica", 9));
+  //行间距，影响不大
   customPlot->legend->setRowSpacing(-3);
+  //数据点数
   QVector<QCPScatterStyle::ScatterShape> shapes;
   shapes << QCPScatterStyle::ssCross;
   shapes << QCPScatterStyle::ssPlus;
@@ -249,19 +261,30 @@ void MainWindow::setupScatterStyleDemo(QCustomPlot *customPlot)
     pen.setColor(QColor(qSin(i*0.3)*100+100, qSin(i*0.6+0.7)*100+100, qSin(i*0.4+0.6)*100+100));
     // generate data:
     QVector<double> x(10), y(10);
+    //初始化数据集
     for (int k=0; k<10; ++k)
     {
       x[k] = k/10.0 * 4*3.14 + 0.01;
       y[k] = 7*qSin(x[k])/x[k] + (shapes.size()-i)*5;
-    }
+      //x[k]=y[k]=k;
+    }//end for
+    //更新数据点 vector x; vector y;
     customPlot->graph()->setData(x, y);
+    //自动调整轴上值的显示范围
     customPlot->graph()->rescaleAxes(true);
+    // 自定义y轴值的显示范围(无用)
+    //customPlot->yAxis->setRange(0,100);
+
     customPlot->graph()->setPen(pen);
+    //在图示上显示名称
     customPlot->graph()->setName(QCPScatterStyle::staticMetaObject.enumerator(QCPScatterStyle::staticMetaObject.indexOfEnumerator("ScatterShape")).valueToKey(shapes.at(i)));
+    //设置线类型：是否连线lsLine、散点lsNone、垂线lsImpulse、梯线lsStepCenter
     customPlot->graph()->setLineStyle(QCPGraph::lsLine);
     // set scatter style:
+    //设置交叉点类型
     if (shapes.at(i) != QCPScatterStyle::ssCustom)
     {
+      //曲线形状
       customPlot->graph()->setScatterStyle(QCPScatterStyle(shapes.at(i), 10));
     }
     else
@@ -269,15 +292,23 @@ void MainWindow::setupScatterStyleDemo(QCustomPlot *customPlot)
       QPainterPath customScatterPath;
       for (int i=0; i<3; ++i)
         customScatterPath.cubicTo(qCos(2*M_PI*i/3.0)*9, qSin(2*M_PI*i/3.0)*9, qCos(2*M_PI*(i+0.9)/3.0)*9, qSin(2*M_PI*(i+0.9)/3.0)*9, 0, 0);
+
+      //曲线形状
       customPlot->graph()->setScatterStyle(QCPScatterStyle(customScatterPath, QPen(Qt::black, 0), QColor(40, 70, 255, 50), 10));
     }
-  }
+  }//end for
+
   // set blank axis lines:
+  // 自动调整轴上值的显示范围
   customPlot->rescaleAxes();
-  customPlot->xAxis->setTicks(false);
-  customPlot->yAxis->setTicks(false);
-  customPlot->xAxis->setTickLabels(false);
-  customPlot->yAxis->setTickLabels(false);
+  //设置坐标的竖线
+  customPlot->xAxis->setTicks(true);
+  //设置坐标的横线
+  customPlot->yAxis->setTicks(true);
+  //设置横坐标刻度
+  customPlot->xAxis->setTickLabels(true);
+  //设置纵坐标刻度
+  customPlot->yAxis->setTickLabels(true);
   // make top right axes clones of bottom left axes:
   customPlot->axisRect()->setupFullAxesBox();
 }
@@ -285,19 +316,26 @@ void MainWindow::setupScatterStyleDemo(QCustomPlot *customPlot)
 void MainWindow::setupLineStyleDemo(QCustomPlot *customPlot)
 {
   demoName = "Line Style Demo";
+  //是否显示图标提示
   customPlot->legend->setVisible(true);
   customPlot->legend->setFont(QFont("Helvetica", 9));
   QPen pen;
   QStringList lineNames;
+  //展示六种线条
   lineNames << "lsNone" << "lsLine" << "lsStepLeft" << "lsStepRight" << "lsStepCenter" << "lsImpulse";
   // add graphs with different line styles:
   for (int i=QCPGraph::lsNone; i<=QCPGraph::lsImpulse; ++i)
   {
+    // 添加数据曲线（一个图像可以有多个数据曲线）
     customPlot->addGraph();
+    //设置画笔颜色
     pen.setColor(QColor(qSin(i*1+1.2)*80+80, qSin(i*0.3+0)*80+80, qSin(i*0.3+1.5)*80+80));
     customPlot->graph()->setPen(pen);
+    //设置图标区域线条的类型名称
     customPlot->graph()->setName(lineNames.at(i-QCPGraph::lsNone));
+    //线条样式
     customPlot->graph()->setLineStyle((QCPGraph::LineStyle)i);
+    //曲线形状(必须，点的形状，点的大小)
     customPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
     // generate data:
     QVector<double> x(15), y(15);
@@ -306,16 +344,19 @@ void MainWindow::setupLineStyleDemo(QCustomPlot *customPlot)
       x[j] = j/15.0 * 5*3.14 + 0.01;
       y[j] = 7*qSin(x[j])/x[j] - (i-QCPGraph::lsNone)*5 + (QCPGraph::lsImpulse)*5 + 2;
     }
+    //填充数据
     customPlot->graph()->setData(x, y);
+    //自动调整轴上值的显示范围(必须)
     customPlot->graph()->rescaleAxes(true);
   }
   // zoom out a bit:
+  //缩放比例
   customPlot->yAxis->scaleRange(1.1, customPlot->yAxis->range().center());
   customPlot->xAxis->scaleRange(1.1, customPlot->xAxis->range().center());
   // set blank axis lines:
-  customPlot->xAxis->setTicks(false);
+  customPlot->xAxis->setTicks(true);
   customPlot->yAxis->setTicks(true);
-  customPlot->xAxis->setTickLabels(false);
+  customPlot->xAxis->setTickLabels(true);
   customPlot->yAxis->setTickLabels(true);
   // make top right axes clones of bottom left axes:
   customPlot->axisRect()->setupFullAxesBox();
@@ -380,6 +421,7 @@ void MainWindow::setupDateDemo(QCustomPlot *customPlot)
     QColor color(20+200/4.0*gi,70*(1.6-gi/4.0), 150, 150);
     customPlot->graph()->setLineStyle(QCPGraph::lsLine);
     customPlot->graph()->setPen(QPen(color.lighter(200)));
+    //填充曲线方式
     customPlot->graph()->setBrush(QBrush(color));
     // generate random walk data:
     QVector<QCPGraphData> timeData(250);
@@ -653,6 +695,7 @@ void MainWindow::setupLogarithmicDemo(QCustomPlot *customPlot)
   customPlot->xAxis->setRange(0, 19.9);
   customPlot->yAxis->setRange(1e-2, 1e10);
   // make range draggable and zoomable:
+  //设置交互方式
   customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 
   // make top right axes clones of bottom left axes:
@@ -662,6 +705,7 @@ void MainWindow::setupLogarithmicDemo(QCustomPlot *customPlot)
   connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
 
   customPlot->legend->setVisible(true);
+  //设置背景色
   customPlot->legend->setBrush(QBrush(QColor(255,255,255,150)));
   customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignLeft|Qt::AlignTop); // make legend align in top left corner or axis rect
 }
@@ -680,6 +724,7 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
   customPlot->legend->setFont(font);
   */
   customPlot->addGraph(); // blue line
+  //设置画笔颜色
   customPlot->graph(0)->setPen(QPen(QColor(40, 110, 255)));
   customPlot->addGraph(); // red line
   customPlot->graph(1)->setPen(QPen(QColor(255, 110, 40)));
@@ -1396,6 +1441,7 @@ void MainWindow::bracketDataSlot()
 
   itemDemoPhaseTracer->setGraphKey((8*M_PI+fmod(M_PI*1.5-phase, 6*M_PI))/k);
 
+  // 重画图像
   ui->customPlot->replot();
 
   // calculate frames per second:
@@ -1428,10 +1474,13 @@ MainWindow::~MainWindow()
 void MainWindow::screenShot()
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  qDebug() << "版本1:" << QT_VERSION;
   QPixmap pm = QPixmap::grabWindow(qApp->desktop()->winId(), this->x()+2, this->y()+2, this->frameGeometry().width()-4, this->frameGeometry().height()-4);
 #elif QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
+  qDebug() << "版本2:" << QT_VERSION;
   QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(), this->x()+2, this->y()+2, this->frameGeometry().width()-4, this->frameGeometry().height()-4);
 #else
+  qDebug() << "版本3:" << QT_VERSION;
   QPixmap pm = qApp->primaryScreen()->grabWindow(qApp->desktop()->winId(), this->x()-7, this->y()-7, this->frameGeometry().width()+14, this->frameGeometry().height()+14);
 #endif
   QString fileName = demoName.toLower()+".png";
@@ -1473,3 +1522,115 @@ void MainWindow::allScreenShots()
   }
 }
 
+/**
+ * @brief MainWindow::painBones 绘画骨骼
+ */
+void MainWindow::painBones(QCustomPlot *customPlot)
+{
+    if( !this->m_model_.checkData() )
+    {
+        qDebug()<<"painBones : error";
+        return;
+    }
+    //多少个骨骼 86
+    int bones_nums = this->m_model_.getHead()->size();
+    qDebug() << bones_nums << "人体个骨骼" ;
+
+    QPointF pHead, pNeck, pRightShoulder, pRightElbow, pRightHand;
+    QPointF pLeftShoulder, pLeftElbow, pLeftHand, pTorso, pRightHip;
+    QPointF pRightKnee, pRightFoot, pLeftHip, pLeftKnee, pLeftFoot;
+
+    //数据点数
+    QVector<QCPScatterStyle::ScatterShape> shapes;
+    shapes << QCPScatterStyle::ssCircle;//空心圆
+    shapes << QCPScatterStyle::ssCross;
+    shapes << QCPScatterStyle::ssPlus;
+    shapes << QCPScatterStyle::ssDisc;//圆点
+    shapes << QCPScatterStyle::ssSquare;
+    shapes << QCPScatterStyle::ssDiamond;
+    shapes << QCPScatterStyle::ssStar;
+    shapes << QCPScatterStyle::ssTriangle;
+    shapes << QCPScatterStyle::ssTriangleInverted;
+    shapes << QCPScatterStyle::ssCrossSquare;
+    shapes << QCPScatterStyle::ssPlusSquare;
+    shapes << QCPScatterStyle::ssCrossCircle;
+    shapes << QCPScatterStyle::ssPlusCircle;
+    shapes << QCPScatterStyle::ssPeace;
+    shapes << QCPScatterStyle::ssCustom;
+
+    QPen pen;
+
+    //动作数量
+    //bones_nums = 80;
+    //采集数据
+    for( int i = 0; i < bones_nums; i++ ){
+        customPlot->addGraph();
+        pen.setColor(QColor(qSin(i*0.3)*100+100, qSin(i*0.6+0.7)*100+100, qSin(i*0.4+0.6)*100+100));
+
+        pHead = this->m_model_.getHead()->at(i);
+        pNeck = this->m_model_.getNeck()->at(i);
+        pRightShoulder = this->m_model_.getRightShoulder()->at(i);
+        pRightElbow = this->m_model_.getRightElbow()->at(i);
+        pRightHand = this->m_model_.getRightHand()->at(i);
+        pLeftShoulder = this->m_model_.getLeftShoulder()->at(i);
+        pLeftElbow = this->m_model_.getLeftElbow()->at(i);
+        pLeftHand = this->m_model_.getLeftHand()->at(i);
+        pTorso = this->m_model_.getTorso()->at(i);
+        pRightHip = this->m_model_.getRightHip()->at(i);
+        pRightKnee = this->m_model_.getRightKnee()->at(i);
+        pRightFoot = this->m_model_.getRightFoot()->at(i);
+        pLeftHip = this->m_model_.getLeftHip()->at(i);
+        pLeftKnee = this->m_model_.getLeftKnee()->at(i);
+        pLeftFoot = this->m_model_.getLeftFoot()->at(i);
+
+        QVector<double> x(15), y(15);
+
+        x[0] = double(pHead.x()); y[0] = pHead.y();
+        x[1] = pNeck.x(); y[1] = pNeck.y();
+        x[2] = pRightShoulder.x(); y[2] = pRightShoulder.y();
+        x[3] = pRightElbow.x(); y[3] = pRightElbow.y();
+        x[4] = pRightHand.x(); y[4] = pRightHand.y();
+        x[5] = pLeftShoulder.x(); y[5] = pLeftShoulder.y();
+        x[6] = pLeftElbow.x(); y[6] = pLeftElbow.y();
+        x[7] = pLeftHand.x(); y[7] = pLeftHand.y();
+        x[8] = pTorso.x(); y[8] = pTorso.y();
+        x[9] = pRightHip.x(); y[9] = pRightHip.y();
+        x[10] = pRightKnee.x(); y[10] = pRightKnee.y();
+        x[11] = pRightFoot.x(); y[11] = pRightFoot.y();
+        x[12] = pLeftHip.x(); y[12] = pLeftHip.y();
+        x[13] = pLeftKnee.x(); y[13] = pLeftKnee.y();
+        x[14] = pLeftFoot.x(); y[14] = pLeftFoot.y();
+
+        //qDebug() << x << ", " << y;
+        //更新数据点 vector x; vector y;
+        customPlot->graph()->setData(x, y);
+
+        //自动调整轴上值的显示范围
+        customPlot->graph()->rescaleAxes(true);
+
+        customPlot->graph()->setPen(pen);
+        //在图示上显示名称
+        customPlot->graph()->setName(QCPScatterStyle::staticMetaObject.enumerator(QCPScatterStyle::staticMetaObject.indexOfEnumerator("ScatterShape")).valueToKey(shapes.at(i%15)));
+        //设置线类型：是否连线lsLine、散点lsNone、垂线lsImpulse、梯线lsStepCenter
+        customPlot->graph()->setLineStyle(QCPGraph::lsNone);
+
+        //曲线形状
+        customPlot->graph()->setScatterStyle(QCPScatterStyle(shapes.at(3), 10)); //3圆点
+        //customPlot->graph()->setScatterStyle(QCPScatterStyle(customScatterPath, QPen(Qt::black, 0), QColor(40, 70, 255, 50), 10));
+    }
+
+    // set blank axis lines: 自动调整轴上值的显示范围
+    customPlot->rescaleAxes(true);
+    //设置坐标的竖线
+    customPlot->xAxis->setTicks(true);
+    //设置坐标的横线
+    customPlot->yAxis->setTicks(true);
+    //设置横坐标刻度
+    customPlot->xAxis->setTickLabels(true);
+    //设置纵坐标刻度
+    customPlot->yAxis->setTickLabels(true);
+    // make top right axes clones of bottom left axes:
+    customPlot->axisRect()->setupFullAxesBox();
+
+    return;
+}

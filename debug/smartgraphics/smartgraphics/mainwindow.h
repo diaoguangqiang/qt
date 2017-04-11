@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "qcustomplot.h"
+#include "cmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -48,12 +49,21 @@ public:
       void allScreenShots();
 
     private:
+        //绘画骨骼
+        void painBones(QCustomPlot *customPlot);
+
+
+
+    private:
       Ui::MainWindow *ui;
 
       QString demoName;
       QTimer dataTimer;
       QCPItemTracer *itemDemoPhaseTracer;
       int currentDemoIndex;
+
+      //数据
+      CModel m_model_;
 };
 
 #endif // MAINWINDOW_H
