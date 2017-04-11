@@ -3,7 +3,10 @@
 
 #include "cmodel.h"
 
-
+double g_min_x_ = 0;
+double g_min_y_ = 0;
+double g_max_x_ = 0;
+double g_max_y_ = 0;
 
 CModel::CModel()
 {
@@ -37,72 +40,74 @@ bool CModel::readTxt(const char*)
         mode_no = line_no % 15;
         switch ( mode_no ) {
             case 0:
-                qDebug()<< line_no << ": head :" << str << " : " << point.x() << ", " << point.y();
+                //qDebug()<< line_no << ": head :" << str << " : " << point.x() << ", " << point.y();
                 this->getHead()->push_back(point);
                 break;
             case 1:
-                qDebug()<< line_no << ": neck :" << str;
+                //qDebug()<< line_no << ": neck :" << str;
                 this->getNeck()->push_back(point);
                 break;
             case 2:
-                qDebug()<< line_no << ": right shoulder :" << str;
+                //qDebug()<< line_no << ": right shoulder :" << str;
                 this->getRightShoulder()->push_back(point);
                 break;
             case 3:
-                qDebug()<< line_no << ": right elbow :" << str;
+                //qDebug()<< line_no << ": right elbow :" << str;
                 this->getRightElbow()->push_back(point);
                 break;
             case 4:
-                qDebug()<< line_no << ": right hand :" << str;
+                //qDebug()<< line_no << ": right hand :" << str;
                 this->getRightHand()->push_back(point);
                 break;
             case 5:
-                qDebug()<< line_no << ": left shoulder :" << str;
+                //qDebug()<< line_no << ": left shoulder :" << str;
                 this->getLeftShoulder()->push_back(point);
                 break;
             case 6:
-                qDebug()<< line_no << ": left elbow :" << str;
+                //qDebug()<< line_no << ": left elbow :" << str;
                 this->getLeftElbow()->push_back(point);
                 break;
             case 7:
-                qDebug()<< line_no << ": left hand :" << str;
+                //qDebug()<< line_no << ": left hand :" << str;
                 this->getLeftHand()->push_back(point);
                 break;
             case 8:
-                qDebug()<< line_no << ": torso :" << str;
+                //qDebug()<< line_no << ": torso :" << str;
                 this->getTorso()->push_back(point);
                 break;
             case 9:
-                qDebug()<< line_no << ": right hip :" << str;
+                //qDebug()<< line_no << ": right hip :" << str;
                 this->getRightHip()->push_back(point);
                 break;
             case 10:
-                qDebug()<< line_no << ": right knee :" << str;
+               // qDebug()<< line_no << ": right knee :" << str;
                 this->getRightKnee()->push_back(point);
                 break;
             case 11:
-                qDebug()<< line_no << ": right foot :" << str;
+                //qDebug()<< line_no << ": right foot :" << str;
                 this->getRightFoot()->push_back(point);
                 break;
             case 12:
-                qDebug()<< line_no << ": left hip :" << str;
+                //qDebug()<< line_no << ": left hip :" << str;
                 this->getLeftHip()->push_back(point);
                 break;
             case 13:
-                qDebug()<< line_no << ": left knee :" << str;
+                //qDebug()<< line_no << ": left knee :" << str;
                 this->getLeftKnee()->push_back(point);
                 break;
             case 14:
-                qDebug()<< line_no << ": left foot :" << str;
+                //qDebug()<< line_no << ": left foot :" << str;
                 this->getLeftFoot()->push_back(point);
                 break;
             default:
-                qDebug()<< line_no << ": other : error " << str;
+                //qDebug()<< line_no << ": other : error " << str;
                 break;
         }
 
         line_no++;
     }
+
+    file.close();
 
     return true;
 }
@@ -123,6 +128,8 @@ QPointF CModel::getPointF(const QString& _str)
     QStringList str_list = _str.split(' ');
     p.setX(str_list.at(0).toFloat());
     p.setY(str_list.at(1).toFloat());
+
+    setMinMaxData( str_list.at(0).toFloat(), str_list.at(1).toFloat() );
 
     return p;
 }
@@ -182,4 +189,44 @@ bool CModel::checkData()
     }
 
     return true;
+}
+
+/**
+ * @brief CModel::setMinMaxData 获取最小最大值 接口存在问题
+ */
+void CModel::setMinMaxData(const double& _x, const double& _y)
+{
+    static bool init = true;
+    if( init == true ){
+        g_min_x_ = _x;
+        g_max_x_ = _x;
+        g_min_y_ = _y;
+        g_max_y_ = _y;
+
+        init = false;
+        return;
+    }
+
+
+    if( _x < g_min_x_ ){
+        //qDebug() << g_min_x_ << ", min x: " << _x;
+        g_min_x_ = _x;
+    }
+
+    if( _y < g_min_y_ ){
+        //qDebug() << g_min_y_ << ", min y: " << _y;
+        g_min_y_ = _y;
+    }
+
+    if( _x > g_max_x_ ){
+        //qDebug() << g_max_x_ << ", max x: " << _x;
+        g_max_x_ = _x;
+    }
+
+    if( _y > g_max_y_ ){
+        //qDebug() << g_max_y_ << ", max y: " << _y;
+        g_max_y_ = _y;
+    }
+
+    return;
 }

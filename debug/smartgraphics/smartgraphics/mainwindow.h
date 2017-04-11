@@ -50,8 +50,9 @@ public:
 
     private:
         //绘画骨骼
-        void painBones(QCustomPlot *customPlot);
-
+        void paintPointBones(QCustomPlot *customPlot);
+        //绘画连线的骨骼
+        void paintLineBones(QCustomPlot *customPlot);
 
 
     private:
