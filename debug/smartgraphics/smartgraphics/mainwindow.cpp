@@ -7,16 +7,23 @@
 #include <QMessageBox>
 #include <QMetaEnum>
 
+//引用数据层定义的上下限
+extern double g_min_x_;
+extern double g_min_y_;
+extern double g_max_x_;
+extern double g_max_y_;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    setGeometry(400, 250, 542, 390);
+    //x,y  x,y
+    setGeometry(330, 100, 742, 550);
 
-    //16 17 3 5 8 10
-    this->setupDemo(20);
+    //16 17 3 5 8 10 18图 19指数 15动图可拖动 14线条 1铉 3多条折线
+    this->setupDemo(21);
 
     //setupPlayground(ui->customPlot);
     // 0:  setupQuadraticDemo(ui->customPlot);
@@ -69,8 +76,10 @@ void MainWindow::setupDemo(int demoIndex)
     case 17: setupAdvancedAxesDemo(ui->customPlot); break;
     case 18: setupColorMapDemo(ui->customPlot); break;
     case 19: setupFinancialDemo(ui->customPlot); break;
-    //绘画人体骨骼
-    case 20: this->painBones(ui->customPlot); break;
+    //绘画人体骨骼：散点
+    case 20: this->paintPointBones(ui->customPlot); break;
+    //绘画人体骨骼：连线
+    case 21: this->paintLineBones(ui->customPlot); break;
     default: break;
   }
 
@@ -904,22 +913,27 @@ void MainWindow::setupStatisticalDemo(QCustomPlot *customPlot)
 void MainWindow::setupSimpleItemDemo(QCustomPlot *customPlot)
 {
   demoName = "Simple Item Demo";
+  //拖动|缩放
   customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 
   // add the text label at the top:
   QCPItemText *textLabel = new QCPItemText(customPlot);
   textLabel->setPositionAlignment(Qt::AlignTop|Qt::AlignHCenter);
+  //显示位置
   textLabel->position->setType(QCPItemPosition::ptAxisRectRatio);
   textLabel->position->setCoords(0.5, 0); // place position at center/top of axis rect
   textLabel->setText("Text Item Demo");
   textLabel->setFont(QFont(font().family(), 16)); // make font a bit larger
+  //画笔颜色
   textLabel->setPen(QPen(Qt::black)); // show black border around text
 
   // add the arrow:
+  //添加线条方向
   QCPItemLine *arrow = new QCPItemLine(customPlot);
   arrow->start->setParentAnchor(textLabel->bottom);
   arrow->end->setCoords(4, 1.6); // point to (4, 1.6) in x-y-plot coordinates
-  arrow->setHead(QCPLineEnding::esSpikeArrow);
+  //esSpikeArrow箭头，esFlatArrow， esNone没有箭头
+  arrow->setHead(QCPLineEnding::esHalfBar);
 }
 
 void MainWindow::setupItemDemo(QCustomPlot *customPlot)
@@ -1525,7 +1539,7 @@ void MainWindow::allScreenShots()
 /**
  * @brief MainWindow::painBones 绘画骨骼
  */
-void MainWindow::painBones(QCustomPlot *customPlot)
+void MainWindow::paintPointBones(QCustomPlot *customPlot)
 {
     if( !this->m_model_.checkData() )
     {
@@ -1629,6 +1643,189 @@ void MainWindow::painBones(QCustomPlot *customPlot)
     customPlot->xAxis->setTickLabels(true);
     //设置纵坐标刻度
     customPlot->yAxis->setTickLabels(true);
+    // make top right axes clones of bottom left axes:
+    customPlot->axisRect()->setupFullAxesBox();
+
+    return;
+}
+
+/**
+ * @brief MainWindow::paintLineBones 绘画连线的骨骼
+ * @param customPlot
+ */
+void MainWindow::paintLineBones(QCustomPlot *customPlot)
+{
+    if( !this->m_model_.checkData() )
+    {
+        qDebug()<<"painBones : error";
+        return;
+    }
+
+    //多少个动作 86
+    int bones_nums = this->m_model_.getHead()->size();
+    qDebug() << bones_nums << "个人体动作" ;
+
+    //15个骨骼节点
+    QPointF pHead, pNeck, pRightShoulder, pRightElbow, pRightHand;
+    QPointF pLeftShoulder, pLeftElbow, pLeftHand, pTorso, pRightHip;
+    QPointF pRightKnee, pRightFoot, pLeftHip, pLeftKnee, pLeftFoot;
+    //14条线
+    QCPItemLine *arrow_head_neck = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_neck_right_shouler = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_neck_left_shouler = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_neck_torso = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_right_shoulder_elbow = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_right_elbow_hand = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_left_shoulder_elbow = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_left_elbow_hand = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_torso_right_hip = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_torso_left_hip = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_right_hip_knee = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_right_knee_foot = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_left_hip_knee = new QCPItemLine(customPlot);
+    QCPItemLine *arrow_left_knee_foot = new QCPItemLine(customPlot);
+
+    //数据点数
+    QVector<QCPScatterStyle::ScatterShape> shapes;
+    shapes << QCPScatterStyle::ssCircle;//空心圆
+    shapes << QCPScatterStyle::ssCross;
+    shapes << QCPScatterStyle::ssPlus;
+    shapes << QCPScatterStyle::ssDisc;//圆点
+    shapes << QCPScatterStyle::ssSquare;
+    shapes << QCPScatterStyle::ssDiamond;
+    shapes << QCPScatterStyle::ssStar;
+    shapes << QCPScatterStyle::ssTriangle;
+    shapes << QCPScatterStyle::ssTriangleInverted;
+    shapes << QCPScatterStyle::ssCrossSquare;
+    shapes << QCPScatterStyle::ssPlusSquare;
+    shapes << QCPScatterStyle::ssCrossCircle;
+    shapes << QCPScatterStyle::ssPlusCircle;
+    shapes << QCPScatterStyle::ssPeace;
+    shapes << QCPScatterStyle::ssCustom;
+
+    //设置拖动|缩放
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    QPen pen;
+
+    //动作数量
+    //bones_nums = 78;
+    //采集数据
+    for( int i = 0; i < bones_nums; i++ ){
+        //制定特定的动作断面
+        //i = 25;
+
+        customPlot->addGraph();
+        pen.setColor(QColor(qSin(i*0.3)*100+100, qSin(i*0.6+0.7)*100+100, qSin(i*0.4+0.6)*100+100));
+
+        //获取数据
+        pHead = this->m_model_.getHead()->at(i);
+        pNeck = this->m_model_.getNeck()->at(i);
+        pRightShoulder = this->m_model_.getRightShoulder()->at(i);
+        pRightElbow = this->m_model_.getRightElbow()->at(i);
+        pRightHand = this->m_model_.getRightHand()->at(i);
+        pLeftShoulder = this->m_model_.getLeftShoulder()->at(i);
+        pLeftElbow = this->m_model_.getLeftElbow()->at(i);
+        pLeftHand = this->m_model_.getLeftHand()->at(i);
+        pTorso = this->m_model_.getTorso()->at(i);
+        pRightHip = this->m_model_.getRightHip()->at(i);
+        pRightKnee = this->m_model_.getRightKnee()->at(i);
+        pRightFoot = this->m_model_.getRightFoot()->at(i);
+        pLeftHip = this->m_model_.getLeftHip()->at(i);
+        pLeftKnee = this->m_model_.getLeftKnee()->at(i);
+        pLeftFoot = this->m_model_.getLeftFoot()->at(i);
+
+        QVector<double> x(PEOPLE_BONES), y(PEOPLE_BONES);
+
+        //填充数据
+        x[0] = pHead.x(); y[0] = pHead.y();
+        x[1] = pNeck.x(); y[1] = pNeck.y();
+        x[2] = pRightShoulder.x(); y[2] = pRightShoulder.y();
+        x[3] = pRightElbow.x(); y[3] = pRightElbow.y();
+        x[4] = pRightHand.x(); y[4] = pRightHand.y();
+        x[5] = pLeftShoulder.x(); y[5] = pLeftShoulder.y();
+        x[6] = pLeftElbow.x(); y[6] = pLeftElbow.y();
+        x[7] = pLeftHand.x(); y[7] = pLeftHand.y();
+        x[8] = pTorso.x(); y[8] = pTorso.y();
+        x[9] = pRightHip.x(); y[9] = pRightHip.y();
+        x[10] = pRightKnee.x(); y[10] = pRightKnee.y();
+        x[11] = pRightFoot.x(); y[11] = pRightFoot.y();
+        x[12] = pLeftHip.x(); y[12] = pLeftHip.y();
+        x[13] = pLeftKnee.x(); y[13] = pLeftKnee.y();
+        x[14] = pLeftFoot.x(); y[14] = pLeftFoot.y();
+
+        //qDebug() << x << ", " << y;
+        //更新数据点 vector x; vector y;
+        customPlot->graph()->setData(x, y);
+
+        //描线
+        arrow_head_neck->start->setCoords(pHead.x(), pHead.y());
+        arrow_head_neck->end->setCoords(pNeck.x(), pNeck.y());
+        arrow_neck_left_shouler->start->setCoords(pNeck.x(), pNeck.y());
+        arrow_neck_left_shouler->end->setCoords(pLeftShoulder.x(), pLeftShoulder.y());
+        arrow_left_shoulder_elbow->start->setCoords(pLeftShoulder.x(), pLeftShoulder.y());
+        arrow_left_shoulder_elbow->end->setCoords(pLeftElbow.x(), pLeftElbow.y());
+        arrow_left_elbow_hand->start->setCoords(pLeftElbow.x(), pLeftElbow.y());
+        arrow_left_elbow_hand->end->setCoords(pLeftHand.x(), pLeftHand.y());
+        arrow_neck_right_shouler->start->setCoords(pNeck.x(), pNeck.y());
+        arrow_neck_right_shouler->end->setCoords(pRightShoulder.x(), pRightShoulder.y());
+        arrow_right_shoulder_elbow->start->setCoords(pRightShoulder.x(), pRightShoulder.y());
+        arrow_right_shoulder_elbow->end->setCoords(pRightElbow.x(), pRightElbow.y());
+        arrow_right_elbow_hand->start->setCoords(pRightElbow.x(), pRightElbow.y());
+        arrow_right_elbow_hand->end->setCoords(pRightHand.x(), pRightHand.y());
+        arrow_neck_torso->start->setCoords(pNeck.x(), pNeck.y());
+        arrow_neck_torso->end->setCoords(pTorso.x(), pTorso.y());
+        arrow_torso_right_hip->start->setCoords(pTorso.x(), pTorso.y());
+        arrow_torso_right_hip->end->setCoords(pRightHip.x(), pRightHip.y());
+        arrow_right_hip_knee->start->setCoords(pRightHip.x(), pRightHip.y());
+        arrow_right_hip_knee->end->setCoords(pRightKnee.x(), pRightKnee.y());
+        arrow_right_knee_foot->start->setCoords(pRightKnee.x(), pRightKnee.y());
+        arrow_right_knee_foot->end->setCoords(pRightFoot.x(), pRightFoot.y());
+        arrow_torso_left_hip->start->setCoords(pTorso.x(), pTorso.y());
+        arrow_torso_left_hip->end->setCoords(pLeftHip.x(), pLeftHip.y());
+        arrow_left_hip_knee->start->setCoords(pLeftHip.x(), pLeftHip.y());
+        arrow_left_hip_knee->end->setCoords(pLeftKnee.x(), pLeftKnee.y());
+        arrow_left_knee_foot->start->setCoords(pLeftKnee.x(), pLeftKnee.y());
+        arrow_left_knee_foot->end->setCoords(pLeftFoot.x(), pLeftFoot.y());
+
+        //esSpikeArrow箭头，esFlatArrow， esNone没有箭头
+        //arrow->setHead(QCPLineEnding::esNone);
+
+        //自动调整轴上值的显示范围
+        customPlot->graph()->rescaleAxes(true);
+        customPlot->graph()->setPen(pen);
+        //在图示上显示名称
+        customPlot->graph()->setName(QCPScatterStyle::staticMetaObject.enumerator(QCPScatterStyle::staticMetaObject.indexOfEnumerator("ScatterShape")).valueToKey(shapes.at(i%15)));
+        //设置线类型：是否连线lsLine、散点lsNone、垂线lsImpulse、梯线lsStepCenter
+        customPlot->graph()->setLineStyle(QCPGraph::lsNone);
+
+        //曲线形状
+        customPlot->graph()->setScatterStyle(QCPScatterStyle(shapes.at(3), 10)); //3圆点
+        //customPlot->graph()->setScatterStyle(QCPScatterStyle(customScatterPath, QPen(Qt::black, 0), QColor(40, 70, 255, 50), 10));
+    }
+
+    // set title of plot:
+    customPlot->plotLayout()->insertRow(0);
+    customPlot->plotLayout()->addElement(0, 0, new QCPTextElement(customPlot, "Regenerative Energies"));
+
+    // set blank axis lines: 自动调整轴上值的显示范围
+    customPlot->rescaleAxes(true);
+    //设置图片的标题
+    customPlot->xAxis->setLabel(QString::fromUtf8("15 pix"));
+    //设置坐标的竖线
+    customPlot->xAxis->setTicks(true);
+    //设置横坐标刻度
+    customPlot->xAxis->setTickLabels(true);
+    customPlot->xAxis->setRange(g_min_x_ - PADDING_SPACE, g_max_x_ + PADDING_SPACE);
+    qDebug()<< g_min_x_ << ", x" << g_max_x_;
+
+    //设置坐标的横线
+    customPlot->yAxis->setTicks(true);
+    //设置纵坐标刻度
+    customPlot->yAxis->setTickLabels(true);
+    customPlot->yAxis->setRange( g_min_y_ - PADDING_SPACE, g_max_y_ + PADDING_SPACE);
+    qDebug() << g_min_y_ << ", y" << g_max_y_;
+
     // make top right axes clones of bottom left axes:
     customPlot->axisRect()->setupFullAxesBox();
 

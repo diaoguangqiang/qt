@@ -25,6 +25,8 @@ line 15	Left Foot 左脚
 
 //定个关节点数据 15个点构成人体
 const int PEOPLE_BONES = 15;
+//坐标系的边距
+const double PADDING_SPACE = 50;
 
 class CModel
 {
@@ -54,12 +56,12 @@ public:
 private:
     //读取文件
     bool readTxt(const char*);
-    //初始化
-    bool initData();
     //根据字符串解析出point
     QPointF getPointF(const QString&);
     //清除数据
-    void clearData();    
+    void clearData();
+    //获取最小最大值
+    void setMinMaxData(const double& _x, const double& _y);
 
 private:
     QVector<QPointF> m_head_; //头
