@@ -1,0 +1,11 @@
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\bin\Debug\ZedGraph.Demo.exe
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\bin\Debug\ZedGraph.Demo.pdb
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\bin\Debug\ZedGraph.dll
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\obj\Debug\ResolveAssemblyReference.cache
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\obj\Debug\ZedGraph.Demo.Properties.Resources.resources
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\obj\Debug\ZedGraph.Demo.ChartTabForm.resources
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\obj\Debug\ZedGraph.Demo.AboutForm.resources
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\obj\Debug\ZedGraph.Demo.ZedGraph.Demo.LicenseForm.resources
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\obj\Debug\ZedGraph.Demo.csproj.GenerateResource.Cache
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\obj\Debug\ZedGraph.Demo.exe
+D:\程序资料\网上下载\zedGraph_demo_5.0.9\InteractiveDemo\obj\Debug\ZedGraph.Demo.pdb
