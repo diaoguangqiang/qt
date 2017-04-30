@@ -7,6 +7,9 @@ int main(int argc, char *argv[])
     QApplication::setGraphicsSystem("raster");
     //QApplication::setGraphicsSystem("opengl");
 #endif
+
+    QApplication::addLibraryPath("./platforms");
+
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
