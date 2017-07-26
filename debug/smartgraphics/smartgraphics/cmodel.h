@@ -53,6 +53,8 @@ public:
     //校验数据完整性
     bool checkData();
 
+    int GetActionNum(){ return this->m_action_nums_;}
+
 private:
     //读取文件
     bool readTxt(const char*);
@@ -62,6 +64,7 @@ private:
     void clearData();
     //获取最小最大值
     void setMinMaxData(const double& _x, const double& _y);
+
 
 private:
     QVector<QPointF> m_head_; //头
@@ -79,6 +82,9 @@ private:
     QVector<QPointF> m_left_hip_;// 左臀
     QVector<QPointF> m_left_knee_;// 左膝盖
     QVector<QPointF> m_left_foot_;// 左脚
+
+    // 动作数目
+    int m_action_nums_;
 };
 
 #endif // CMODEL_H

@@ -8,11 +8,21 @@ double g_min_y_ = 0;
 double g_max_x_ = 0;
 double g_max_y_ = 0;
 
+// 中心对称点
+double g_center_x_ = 0;
+double g_center_y_ = 0;
+
+
 CModel::CModel()
+    : m_action_nums_(0)
 {
     this->clearData();
     //读取txt
     this->readTxt(0);
+
+    g_center_x_ = (g_max_x_ + g_min_x_) / 2;
+    g_center_y_ = (g_max_y_ + g_min_y_ )/ 2;
+    qDebug()<< g_center_x_ << "," << g_center_y_;
 }
 
 
@@ -22,7 +32,7 @@ CModel::CModel()
  */
 bool CModel::readTxt(const char*)
 {
-    QFile file("F:\\Qt\\smartgraphics\\smartgraphics\\a01_s01_e01_screen.txt");
+    QFile file("D:\\screen.txt");
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug()<<"Can't open the file!"<<endl;
         return false;
@@ -41,7 +51,10 @@ bool CModel::readTxt(const char*)
         switch ( mode_no ) {
             case 0:
                 //qDebug()<< line_no << ": head :" << str << " : " << point.x() << ", " << point.y();
-                this->getHead()->push_back(point);
+                {
+                    this->getHead()->push_back(point);
+                    ++m_action_nums_;
+                }
                 break;
             case 1:
                 //qDebug()<< line_no << ": neck :" << str;

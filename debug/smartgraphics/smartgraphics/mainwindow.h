@@ -47,13 +47,19 @@ public:
       void bracketDataSlot();
       void screenShot();
       void allScreenShots();
+      void OnlineTreeViewDoubleClick(const QModelIndex & index);
 
     private:
         //绘画骨骼
         void paintPointBones(QCustomPlot *customPlot);
         //绘画连线的骨骼
         void paintLineBones(QCustomPlot *customPlot);
-
+        //绘制单个动作
+        void paintPointEveryBone(QCustomPlot *customPlot, int index);
+        //绘画连线的骨骼
+        void paintLineEveryBone(QCustomPlot *customPlot, int index);
+        //初始化树形列表
+        void InitTree();
 
     private:
       Ui::MainWindow *ui;
@@ -65,6 +71,24 @@ public:
 
       //数据
       CModel m_model_;
+
+      QStandardItemModel *m_tree_model_;
+
+      QCPItemLine *arrow_head_neck;
+      QCPItemLine *arrow_neck_right_shouler ;
+      QCPItemLine *arrow_neck_left_shouler ;
+      QCPItemLine *arrow_neck_torso ;
+      QCPItemLine *arrow_right_shoulder_elbow ;
+      QCPItemLine *arrow_right_elbow_hand ;
+      QCPItemLine *arrow_left_shoulder_elbow ;
+      QCPItemLine *arrow_left_elbow_hand ;
+      QCPItemLine *arrow_torso_right_hip ;
+      QCPItemLine *arrow_torso_left_hip ;
+      QCPItemLine *arrow_right_hip_knee ;
+      QCPItemLine *arrow_right_knee_foot ;
+      QCPItemLine *arrow_left_hip_knee ;
+      QCPItemLine *arrow_left_knee_foot ;
+
 };
 
 #endif // MAINWINDOW_H
