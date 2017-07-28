@@ -17,6 +17,7 @@
 #include "main_menu.h"
 #include "skin_widget.h"
 #include "temperature_widget.h"
+#include "water_widget.h"
 
 // get data from redis
 //#include "redis_server.h"
@@ -78,6 +79,7 @@ private:
     ContentWidget *content_widget; //main content
     KillMummyWidget *kill_mummy_widget;  //
     TemperatureWidget* m_temperature_widget_;//temperature
+	WaterWidget* m_water_widget_;	// ˮ
 
     SystemTray *system_tray; //
     SettingDialog *setting_dialog; //

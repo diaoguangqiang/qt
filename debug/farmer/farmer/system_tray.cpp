@@ -39,7 +39,7 @@ void SystemTray::translateLanguage()
 	action_rise->setText(tr("rise"));
 	action_login->setText(tr("login"));
 	action_separate->setText(tr("separate"));
-	action_logout->setText(tr("logout"));
+	action_logout->setText(tr("tuichu"));
 }
 
 void SystemTray::createTopAction()

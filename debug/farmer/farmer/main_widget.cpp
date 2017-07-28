@@ -13,6 +13,7 @@ MainWidget::MainWidget(QWidget *parent)
     content_widget = new ContentWidget();
 	kill_mummy_widget = new KillMummyWidget();
     m_temperature_widget_ = new TemperatureWidget();
+	m_water_widget_ = new WaterWidget();
 
 	main_menu = new MainMenu();
 	character_widget = new CharacterWidget();
@@ -33,6 +34,7 @@ MainWidget::MainWidget(QWidget *parent)
     statked_widget->addWidget(kill_mummy_widget);
     //
     statked_widget->addWidget(m_temperature_widget_);
+	statked_widget->addWidget(m_water_widget_);
 
 	QVBoxLayout *center_layout = new QVBoxLayout();
 	center_layout->addWidget(statked_widget);
@@ -97,9 +99,10 @@ void MainWidget::startThread()
 }
 
 void MainWidget::turnPage(int current_page)
-{
+{	
+	m_water_widget_->hideWebEngineView();
 	if(current_page == 0)
-	{
+	{		
 		statked_widget->setCurrentWidget(content_widget);
 	}
 	else if(current_page == 1)
@@ -109,6 +112,11 @@ void MainWidget::turnPage(int current_page)
     else if( current_page == 2 ){
         statked_widget->setCurrentWidget(m_temperature_widget_);
     }
+	else if (current_page == 3)
+	{
+		m_water_widget_->showWebEngineView();
+		statked_widget->setCurrentWidget(m_water_widget_);
+	}
 }
 
 void MainWidget::initLocalConnection()
@@ -272,6 +280,7 @@ void MainWidget::changeLanguage(LANGUAGE language)
 	content_widget->translateLanguage();
 	kill_mummy_widget->translateLanguage();
     m_temperature_widget_->translateLanguage();
+	m_water_widget_->translateLanguage();
 	main_menu->translateActions();
 	character_widget->translateLanguage();
 	login_dialog->translateLanguage();
