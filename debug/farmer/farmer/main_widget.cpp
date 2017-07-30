@@ -100,7 +100,6 @@ void MainWidget::startThread()
 
 void MainWidget::turnPage(int current_page)
 {	
-	m_water_widget_->hideWebEngineView();
 	if(current_page == 0)
 	{		
 		statked_widget->setCurrentWidget(content_widget);
@@ -114,7 +113,6 @@ void MainWidget::turnPage(int current_page)
     }
 	else if (current_page == 3)
 	{
-		m_water_widget_->showWebEngineView();
 		statked_widget->setCurrentWidget(m_water_widget_);
 	}
 }

@@ -1,4 +1,4 @@
-#include "content_widget.h"
+ï»¿#include "content_widget.h"
 
 ContentWidget::ContentWidget(QWidget *parent)
 	: QWidget(parent)
@@ -30,7 +30,7 @@ ContentWidget::ContentWidget(QWidget *parent)
 	main_splitter->addWidget(left_widget);
 	main_splitter->addWidget(right_splitter);
 
-	//½ûÖ¹ÍÏ¶¯
+	//ç¦æ­¢æ‹–åŠ¨
 	for(int i = 0; i<right_splitter->count();i++) 
 	{ 
 		QSplitterHandle *handle = right_splitter->handle(i); 

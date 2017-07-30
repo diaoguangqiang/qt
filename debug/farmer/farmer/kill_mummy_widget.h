@@ -1,4 +1,4 @@
-#ifndef KILLMUMMYWIDGET_H
+﻿#ifndef KILLMUMMYWIDGET_H
 #define KILLMUMMYWIDGET_H
 
 #include <QWidget>

@@ -1,4 +1,4 @@
-#ifndef LOADINGWIDGET_H
+﻿#ifndef LOADINGWIDGET_H
 #define LOADINGWIDGET_H
 
 #include "util.h"

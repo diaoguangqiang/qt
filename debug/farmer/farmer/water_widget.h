@@ -2,6 +2,8 @@
 #define WATER_WIDGET_H
 
 #include "qcustomplot.h"
+#include "read_redis_thread.h"
+#include "xml_stream_reader.h"
 
 #include <QWidget>
 #include <QSplitter>
@@ -15,6 +17,9 @@
 #include <QProgressBar>
 #include <QPainter>
 //#include <QtWebEngineWidgets/QWebEngineView>
+#include <QReadWriteLock>
+
+
 
 class WaterWidget : public QWidget
 {
@@ -26,19 +31,18 @@ public:
 
 	void translateLanguage();
 
-	void showWebEngineView();
-	void hideWebEngineView();
-
 private:
 	void initRightTop();
 	void initRightCenter();
 	void initRightCenterFunction();
 	void initRightBottom();
 	void initLeft();
-
 	void initRight();
+	
+	void paintWeekHistoryWater();
+	void paintRealTimeWater();
 
-	void setupPlot();
+	void initThread();
 
 protected:
 
@@ -48,6 +52,9 @@ signals:
 
 	void showLoginDialog();
 	void showRegisterDialog();
+
+private slots:
+	void realtimeDataSlot();
 
 private:
 	QSplitter *main_splitter;
@@ -93,6 +100,17 @@ private:
 	QLabel *connect_label; //成功连接云安全
 	QLabel *version_label; //版本号
 	QPushButton *version_button; //版本升级
+
+	QTimer dataTimer;
+
+
+	ReadRedisThread* thread_reader_; // get data from redis
+
+	std::map < std::string, std::string> map_realtime_data_;
+
+	std::multimap<std::string, std::string> mul_history_data_;
+
+	XmlStreamReader xml_;
 };
 
 #endif // WATER_WIDGET_H
