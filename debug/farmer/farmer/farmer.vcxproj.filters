@@ -254,6 +254,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_qcustomplot.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="read_redis_thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_read_redis_thread.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_read_redis_thread.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="xml_stream_reader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="farmer.ui">
@@ -331,6 +343,9 @@
     <CustomBuild Include="qcustomplot.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="read_redis_thread.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_farmer.h">
@@ -343,6 +358,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xml_stream_reader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

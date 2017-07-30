@@ -1,4 +1,4 @@
-#ifndef CHARACTERWIDGET_H
+﻿#ifndef CHARACTERWIDGET_H
 #define CHARACTERWIDGET_H
 
 #include "push_button.h"

@@ -2,6 +2,8 @@
 
 #include <QCoreApplication>
 
+QReadWriteLock lock_realtime_data_;
+
 WaterWidget::WaterWidget(QWidget *parent)
 : QWidget(parent)
 {
@@ -35,7 +37,10 @@ WaterWidget::WaterWidget(QWidget *parent)
 	main_splitter->addWidget(right_splitter);
 	
 	// 
-	setupPlot();
+	//paintWeekHistoryWater();
+	paintRealTimeWater();
+
+	initThread();
 
 	//禁止拖动
 	for (int i = 0; i < right_splitter->count(); i++)
@@ -61,7 +66,12 @@ WaterWidget::WaterWidget(QWidget *parent)
 
 WaterWidget::~WaterWidget()
 {
+	thread_reader_->stop(true);
+}
 
+void WaterWidget::initThread()
+{
+	thread_reader_ = new ReadRedisThread("127.0.0.1", 6379, &map_realtime_data_, this);
 }
 
 void WaterWidget::initLeft()
@@ -396,7 +406,7 @@ void WaterWidget::initRightBottom()
 	right_bottom_widget->setLayout(bottom_layout);
 }
 
-void WaterWidget::setupPlot()
+void WaterWidget::paintWeekHistoryWater()
 {
 	// The following plot setup is taken from the sine demo:
 	// add two new graphs and set their look:
@@ -404,7 +414,7 @@ void WaterWidget::setupPlot()
 	plot_->graph(0)->setPen(QPen(Qt::red)); // line color blue for first graph
 	// 填充
 	//plot_->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20))); // first graph will be filled with translucent blue
-	
+
 	plot_->addGraph();
 	plot_->graph(1)->setPen(QPen(Qt::green)); // line color red for second graph
 	// generate some points of data (y0 for first, y1 for second graph):
@@ -418,18 +428,21 @@ void WaterWidget::setupPlot()
 		x[i] = x_low[i] = i + 1;
 		//y[i] = 30 + i;
 	}
-	
-	y[0] = 35; y[1] = 33; y[2] = 32; y[3] = 36;	y[4] = 33; y[5] = 35; y[6] = 38; 
+
+	y[0] = 35; y[1] = 33; y[2] = 32; y[3] = 36;	y[4] = 33; y[5] = 35; y[6] = 38;
 	y_low[0] = 24; y_low[1] = 29; y_low[2] = 22; y_low[3] = 25; y_low[4] = 26;
 	y_low[5] = 26; y_low[6] = 27;
 
 	// configure right and top axis to show ticks but no labels:
 	// (see QCPAxisRect::setupFullAxesBox for a quicker method to do this)
-	plot_->xAxis2->setVisible(true);
-	plot_->xAxis2->setTickLabels(false);
+	// 上边框显示为虚线
+	plot_->xAxis2->setVisible(false);
+	plot_->xAxis2->setTickLabels(true);
 
-	plot_->yAxis2->setVisible(true);
-	plot_->yAxis2->setTickLabels(false);
+	// 左边框显示为虚线
+	plot_->yAxis2->setVisible(false);
+	plot_->yAxis2->setTickLabels(true);
+
 	// make left and bottom axes always transfer their ranges to right and top axes:
 	connect(plot_->xAxis, SIGNAL(rangeChanged(QCPRange)), plot_->xAxis2, SLOT(setRange(QCPRange)));
 	connect(plot_->yAxis, SIGNAL(rangeChanged(QCPRange)), plot_->yAxis2, SLOT(setRange(QCPRange)));
@@ -486,6 +499,102 @@ void WaterWidget::setupPlot()
 
 }
 
+void WaterWidget::paintRealTimeWater()
+{
+	//demoName = "Real Time Data Demo";
+
+	// include this section to fully disable antialiasing for higher performance:
+	/*
+	customPlot->setNotAntialiasedElements(QCP::aeAll);
+	QFont font;
+	font.setStyleStrategy(QFont::NoAntialias);
+	customPlot->xAxis->setTickLabelFont(font);
+	customPlot->yAxis->setTickLabelFont(font);
+	customPlot->legend->setFont(font);
+	*/
+	plot_->addGraph(); // blue line
+	plot_->graph(0)->setPen(QPen(QColor(40, 110, 255)));
+	//plot_->addGraph(); // red line
+	//plot_->graph(1)->setPen(QPen(QColor(255, 110, 40)));
+
+	QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
+	timeTicker->setTimeFormat("%h:%m:%s");
+	plot_->xAxis->setTicker(timeTicker);
+
+	plot_->axisRect()->setupFullAxesBox(true);
+	plot_->yAxis->setRange(-1.2, 1.2);
+
+	plot_->xAxis2->setVisible(true);
+	// 显示刻度
+	plot_->xAxis2->setTickLabels(false); 
+
+	plot_->yAxis2->setVisible(true);
+	// 显示刻度
+	plot_->yAxis2->setTickLabels(false);
+
+	// make left and bottom axes transfer their ranges to right and top axes:
+	connect(plot_->xAxis, SIGNAL(rangeChanged(QCPRange)), plot_->xAxis2, SLOT(setRange(QCPRange)));
+	connect(plot_->yAxis, SIGNAL(rangeChanged(QCPRange)), plot_->yAxis2, SLOT(setRange(QCPRange)));
+
+	// setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
+	connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
+	dataTimer.start(1000); // Interval 0 means to refresh as fast as possible
+}
+
+void WaterWidget::realtimeDataSlot()
+{
+	static QTime time(QTime::currentTime());
+	// calculate two new data points:
+	double key = time.elapsed() / 1000.0; // time elapsed since start of demo, in seconds
+	static double lastPointKey = 0;
+	if (key - lastPointKey > 0.002) // at most add point every 2 ms
+	{
+		// add data to lines:
+		plot_->graph(0)->addData(key, qSin(key) + qrand() / (double)RAND_MAX * 1 * qSin(key / 0.3843));
+		//plot_->graph(0)->addData(key, key);
+
+		//plot_->graph(1)->addData(key, qCos(key) + qrand() / (double)RAND_MAX*0.5*qSin(key / 0.4364));
+		
+		// rescale value (vertical) axis to fit the current data:
+		//ui->customPlot->graph(0)->rescaleValueAxis();
+		//ui->customPlot->graph(1)->rescaleValueAxis(true);
+		lastPointKey = key;
+	}
+	// make key axis range scroll with the data (at a constant range size of 8):
+	plot_->xAxis->setRange(key, 8, Qt::AlignRight);
+	//qDebug() << "key:" << key;
+	plot_->replot();
+
+	/*
+	// calculate frames per second:
+	static double lastFpsKey;
+	static int frameCount;
+	++frameCount;
+	if (key - lastFpsKey > 2) // average fps over 2 seconds
+	{		
+		ui->statusBar->showMessage(
+			QString("%1 FPS, Total Data points: %2")
+			.arg(frameCount / (key - lastFpsKey), 0, 'f', 0)
+			.arg(ui->customPlot->graph(0)->data()->size() + ui->customPlot->graph(1)->data()->size())
+			, 0);
+		
+		lastFpsKey = key;
+		frameCount = 0;
+	}
+	*/
+		
+	lock_realtime_data_.lockForRead();
+	for (auto iter = map_realtime_data_.begin(); iter != map_realtime_data_.end(); ++iter)
+	{
+		//QString qstr = QString::fromStdString(iter->second);
+		//double val = qstr.toDouble();
+		qDebug() << "read key:" << iter->first.c_str() << ", val:" << iter->second.c_str();
+	}
+	lock_realtime_data_.unlock();
+	
+}
+
+
 void WaterWidget::translateLanguage()
 {
 //	suggest_label->setText(tr("suggest"));
@@ -515,17 +624,6 @@ void WaterWidget::translateLanguage()
 
 	connect_label->setText(tr("connect success"));
 	version_label->setText(tr("version"));
-}
-
-void WaterWidget::showWebEngineView()
-{
-	//webEngineView->show();
-}
-
-void WaterWidget::hideWebEngineView()
-{
-	//webEngineView->hide();
-	//webEngineView->close();
 }
 
 bool WaterWidget::eventFilter(QObject *obj, QEvent *event)

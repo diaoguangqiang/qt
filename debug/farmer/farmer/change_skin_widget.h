@@ -1,4 +1,4 @@
-#ifndef CHANGESKINWIDGET_H
+﻿#ifndef CHANGESKINWIDGET_H
 #define CHANGESKINWIDGET_H
 
 #include <QWidget>

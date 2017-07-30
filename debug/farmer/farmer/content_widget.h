@@ -1,4 +1,4 @@
-#ifndef CONTENTWIDGET_H
+﻿#ifndef CONTENTWIDGET_H
 #define CONTENTWIDGET_H
 
 #include <QWidget>
